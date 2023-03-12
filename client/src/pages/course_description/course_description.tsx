@@ -19,6 +19,8 @@ export function Course_Description() {
 
     const [userCourses, setUserCourses] = useState<UserCourse[]>([])
 
+    const [professors, setProfessors] = useState<Professors[]>([])
+
     useEffect(() => {
         CourseHistoryService.getCourses()
             .then(res => setUserCourses(res.courses));
