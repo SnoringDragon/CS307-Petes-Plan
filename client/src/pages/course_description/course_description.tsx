@@ -19,7 +19,15 @@ export function Course_Description() {
 
     const [userCourses, setUserCourses] = useState<UserCourse[]>([])
 
+    /* I did this next lines */
+
     const [professors, setProfessors] = useState<Professors[]>([])
+
+    const [sections, setSection] = useState<Section[]>([])
+
+    const [time, setTime] = useState<Time[]>([])
+
+    /** */
 
     useEffect(() => {
         CourseHistoryService.getCourses()
@@ -84,6 +92,22 @@ export function Course_Description() {
             <div className="mt-5 underline">Prerequisities:</div>
             <p></p>
             <Prerequisites prerequisites={course.requirements} userCourses={userCourses} />
+            {/* I added this */}
+            {course.attributes.length ? <div className="mt-5">
+                <span className="underline">Attributes:</span> &nbsp;
+                {course.attributes.map(attribute => attribute.name).join(', ')}
+            </div> : null}
+            <div className="mt-5 underline">Prerequisities:</div>
+            <p></p>
+            <Prerequisites prerequisites={course.requirements} userCourses={userCourses} />
+            {course.attributes.length ? <div className="mt-5">
+                <span className="underline">Attributes:</span> &nbsp;
+                {course.attributes.map(attribute => attribute.name).join(', ')}
+            </div> : null}
+            <div className="mt-5 underline">Prerequisities:</div>
+            <p></p>
+            <Prerequisites prerequisites={course.requirements} userCourses={userCourses} />
+            {/** */}
         </div>
     </div></Layout>)
 }
