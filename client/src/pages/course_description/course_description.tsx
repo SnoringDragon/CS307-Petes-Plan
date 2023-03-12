@@ -97,14 +97,21 @@ export function Course_Description() {
                 <span className="underline">Attributes:</span> &nbsp;
                 {course.attributes.map(attribute => attribute.name).join(', ')}
             </div> : null}
-            <div className="mt-5 underline">Prerequisities:</div>
+            <div className="mt-5 underline">Sections:</div>
             <p></p>
             <Prerequisites prerequisites={course.requirements} userCourses={userCourses} />
             {course.attributes.length ? <div className="mt-5">
                 <span className="underline">Attributes:</span> &nbsp;
                 {course.attributes.map(attribute => attribute.name).join(', ')}
             </div> : null}
-            <div className="mt-5 underline">Prerequisities:</div>
+            <div className="mt-5 underline">Professors:</div>
+            <p></p>
+            <Prerequisites prerequisites={course.requirements} userCourses={userCourses} />
+            {course.attributes.length ? <div className="mt-5">
+                <span className="underline">Attributes:</span> &nbsp;
+                {course.attributes.map(attribute => attribute.name).join(', ')}
+            </div> : null}
+            <div className="mt-5 underline">Time:</div>
             <p></p>
             <Prerequisites prerequisites={course.requirements} userCourses={userCourses} />
             {/** */}
