@@ -34,11 +34,15 @@ export function FuturePlan() {
     const [degreePlans, setDegreePlans] = useState<DegreePlan[]>([]);
     const [degreePlan, setDegreePlan] = useState<DegreePlan | null>(null);
     const [error, setError] = useState('');
+    const [selectedCourse, setSelectedCourse] = useState<ApiCourse | null>(null);
+    const [selectedSem, setSelectedSem] = useState('Fall');
 
     const [createNewPlan, setCreateNewPlan] = useState(false);
+    const [selectSemester, setSelectSemester] = useState(false);
 
     const searchRef = useRef({ value: '' });
     const nameRef = useRef({value:''});
+    const yearRef = useRef({value: ''});
 
     const [degreeSearch, setDegreeSearch] = useState('');
 
@@ -119,6 +123,44 @@ export function FuturePlan() {
             </DialogActions>
         </Dialog>
 
+        <Dialog open={selectSemester} onClose={() => setSelectSemester(false)}>
+            <DialogTitle>Select Semester</DialogTitle>
+            <DialogContent>
+                <Select value = {selectedSem} onChange={e => setSelectedSem(e.target.value as string)} >
+                    <MenuItem value="Fall">Fall</MenuItem>
+                    <MenuItem value="Spring">Spring</MenuItem>
+                    <MenuItem value="Summer">Summer</MenuItem>
+                </Select>
+                <TextField
+                    autoFocus
+                    margin="dense"
+                    label="Year"
+                    fullWidth
+                    variant="standard"
+                    inputRef={yearRef}
+                />
+            </DialogContent>
+            <DialogContentText>
+                {error && <div className="text-red-500">Error: {error}</div>}
+            </DialogContentText>
+            <DialogActions>
+                <Button onClick={() => setSelectSemester(false)}>Cancel</Button>
+                <Button onClick={() => {
+                    setCourseModifications({
+                        ...courseModifications,
+                        add: [...courseModifications.add, {
+                            subject: selectedCourse!.subject,
+                            courseID: selectedCourse!.courseID,
+                            semester: selectedSem,
+                            grade: 'A',
+                            year: parseInt(yearRef.current.value)
+                        }]
+                    });
+                    setSelectSemester(false);
+                }}>Create</Button>
+            </DialogActions>
+            </Dialog>
+
         <div className="grid grid-cols-3 gap-y-2 gap-x-3">
             <div className="w-full h-full flex flex-col items-center justify-left">
                 <div className="bg-white rounded px-4 pb-3 pt-4 text-black w-full">
@@ -140,16 +182,8 @@ export function FuturePlan() {
                                                        className="w-full py-3 px-4 bg-gray-600 border-y border-gray-500 flex items-center" key={i}>
                         <Link to={`/course_description?subject=${course.subject}&courseID=${course.courseID}`} className="mr-auto">{course.subject} {course.courseID}: {course.name}</Link>
                         <Button color="inherit" onClick={() => {
-                            setCourseModifications({
-                                ...courseModifications,
-                                add: [...courseModifications.add, {
-                                    subject: course.subject,
-                                    courseID: course.courseID,
-                                    semester: 'Spring',
-                                    grade: 'A',
-                                    year: 2022
-                                }]
-                            });
+                            setSelectedCourse(course);
+                            setError(''); setSelectSemester(true)
                         }}>Add</Button>
                     </div>))}
                 </div>
