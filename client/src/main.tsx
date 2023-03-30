@@ -27,6 +27,7 @@ import { GradeCalc } from './pages/grade-calc/grade-calc';
 import { Section_Info } from './pages/section-info/section-info';
 import { Instructor } from './pages/instructor/instructor';
 import { SharedReq } from './pages/shared_req/shared_req';
+import { TotalDeg } from './pages/total_deg/total_deg';
 
 const router = createBrowserRouter([
   {
@@ -115,6 +116,10 @@ const router = createBrowserRouter([
     {
       path: "/shared-req",
       element: <SharedReq />
+    },
+    {
+      path: "/total-degree",
+      element: <TotalDeg />
     }
     ]
   }
