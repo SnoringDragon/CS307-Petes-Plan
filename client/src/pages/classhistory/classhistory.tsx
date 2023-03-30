@@ -13,7 +13,15 @@ import CourseService from '../../services/CourseService';
 import { UserCourse } from '../../types/user-course';
 import CourseHistoryService from '../../services/CourseHistoryService';
 import courseHistoryService from '../../services/CourseHistoryService';
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
+import {
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    MenuItem,
+    Select
+} from '@material-ui/core';
 
 
 const gradeRegex = /^(?:[A-D][-+]?|[EFPNSIWU]|(?:PI|PO|IN|WN|IX|WF|SI|IU|WU|AU|CR|NS))$/;
@@ -22,9 +30,13 @@ export function ClassHistory() {
 
     const searchRef = useRef({ value: '' });
     const gradeRef = useRef({ value: '' });
+    const nameRef = useRef({value:''});
+    const yearRef = useRef({value: ''});
 
     const [course, setCourse] = useState<ApiCourse | null>(null);
     const [userCourses, setUserCourses] = useState<UserCourse[]>([]);
+    const [selectedSem, setSelectedSem] = useState('Fall');
+    const [selectSemester, setSelectSemester] = useState(false);
 
     const [error, setError] = useState('');
 
@@ -70,6 +82,43 @@ export function ClassHistory() {
 
 
     return (<Layout>
+        <Dialog open={selectSemester} onClose={() => setSelectSemester(false)}>
+            <DialogTitle>Select Semester</DialogTitle>
+            <DialogContent>
+                <Select value = {selectedSem} onChange={e => setSelectedSem(e.target.value as string)} >
+                    <MenuItem value="Fall">Fall</MenuItem>
+                    <MenuItem value="Spring">Spring</MenuItem>
+                    <MenuItem value="Summer">Summer</MenuItem>
+                </Select>
+                <TextField
+                    autoFocus
+                    margin="dense"
+                    label="Year"
+                    fullWidth
+                    variant="standard"
+                    inputRef={yearRef}
+                />
+            </DialogContent>
+            <DialogContentText>
+                {error && <div className="text-red-500">Error: {error}</div>}
+            </DialogContentText>
+            <DialogActions>
+                <Button onClick={() => setSelectSemester(false)}>Cancel</Button>
+                <Button onClick={() => {
+                    const modifications = {...courseModifications};
+                    modifications.add = [...modifications.add, {
+                        subject: course!.subject,
+                        courseID: course!.courseID,
+                        grade: gradeRef.current.value,
+                        semester: selectedSem,
+                        year: parseInt(yearRef.current.value)
+                    }];
+                    setCourseModifications(modifications);
+                    setSelectSemester(false);
+                }}>Add</Button>
+            </DialogActions>
+        </Dialog>
+
         <Dialog open={!!error} onClose={() => setError('')}>
             <DialogTitle>Error</DialogTitle>
             <DialogContent>
@@ -142,15 +191,7 @@ export function ClassHistory() {
                                         color="primary"
                                         className="w-full h-6"
                                         onClick={() => {
-                                            const modifications = {...courseModifications};
-                                            modifications.add = [...modifications.add, {
-                                                subject: course!.subject,
-                                                courseID: course!.courseID,
-                                                grade: gradeRef.current.value,
-                                                semester: 'Spring',
-                                                year: 2022 // TODO
-                                            }];
-                                            setCourseModifications(modifications);
+                                            setSelectSemester(true);
                                         }}>
                                         Add to History
                                     </Button>
