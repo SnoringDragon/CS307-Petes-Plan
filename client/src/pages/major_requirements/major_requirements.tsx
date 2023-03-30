@@ -38,6 +38,20 @@ export function Major_Requirements() {
                         const isSatisfied = userCourses.find(other => other.courseID === course.courseID &&
                             other.subject === course.subject);
 
+                //         return (<span key={i}>
+                //             {i !== 0  && <b> AND </b>}
+                //             <Link className={`bg-opacity-25 ${isSatisfied ? 'bg-green-500' : 'bg-red-500'}`} to={`/course_description?subject=${course.subject}&courseID=${course.courseID}`}>
+                //                 {course.subject} {course.courseID}
+                //             </Link>
+                //         </span>)
+                //     })}
+                //     <p></p>
+                // </div>
+                // <div className="p-4">
+                //     <u>Shared Requirements:</u> {degree.requirements.map((course, i) => {
+                //         const isSatisfied = userCourses.find(other => other.courseID === course.courseID &&
+                //             other.subject === course.subject);
+
                         return (<span key={i}>
                             {i !== 0  && <b> AND </b>}
                             <Link className={`bg-opacity-25 ${isSatisfied ? 'bg-green-500' : 'bg-red-500'}`} to={`/course_description?subject=${course.subject}&courseID=${course.courseID}`}>
