@@ -36,6 +36,7 @@ export function FuturePlan() {
     const [degreePlan, setDegreePlan] = useState<DegreePlan | null>(null);
     const [error, setError] = useState('');
     const [section, setSection] = useState<Section[][][]>([]);
+    const [course, setCourse] = useState<UserCourse>()
 
     const [createNewPlan, setCreateNewPlan] = useState(false);
 
@@ -48,7 +49,7 @@ export function FuturePlan() {
     const [semCourse, setSemCourse] = useState<ApiCourse>();
     const [selectedSem, setSelectedSem] = useState<string | null>(null);
     const [selectedSection, setSelectedSection] = useState<string | null>(null);
-    const [modifyS] = useState(false);
+    const [modifyS, setModifyS] = useState(false);
 
     const [degreeSearch, setDegreeSearch] = useState('');
 
@@ -114,6 +115,26 @@ export function FuturePlan() {
                 });
         }
     }, [selectedSem, semCourse])
+
+    useEffect(() => {
+        const subject = course?.subject ?? '';
+        const courseID = course?.courseID ?? '';
+
+        if (course != null) {
+            CourseService.getCourse({ courseID, subject })
+                .then(res => {
+                    if (!res) {
+                        setCourse(null);
+                        setError('Course not found');
+                        return;
+                    }
+                    setCourseModifications(res)
+                })
+                .catch(err => {
+                    setError(err?.message ?? err);
+                });
+        }
+    }, [course])
 
     return (<Layout>
         <Dialog open={createNewPlan} onClose={() => setCreateNewPlan(false)}>
@@ -190,7 +211,7 @@ export function FuturePlan() {
                                     <MenuItem value={meetings.days}>{meetings.days} {meetings.startTime}-{meetings.endTime}: {meetings.instructors.length ? meetings.instructors.map(
                                         instructors => <div><Link to={`/professor?id=${instructors._id}`}>
                                             {instructors.firstname} {instructors.lastname}
-                                        </Link></div>) : "Information Unavailable"}</MenuItem>)))))}
+                                        </Link></div>) : "To Be Assigned (TBA)"}</MenuItem>)))))}
                 </Select>
             </div>
             <DialogActions>
@@ -201,13 +222,14 @@ export function FuturePlan() {
             </DialogActions>
         </Dialog>
 
-        <Dialog open={modifyS}>
+        <Dialog open={modifyS} onClose={() => setModifyS(false)}>
             <DialogTitle>Modify</DialogTitle>
             <DialogActions>
                 <Button onClick={() => setWantedSection(true)}>Modify Section</Button>
                 <Button onClick={() => {
                     setSem(true);
                 }}>Modify Semester</Button>
+                <Button onClick={() => setModifyS(false)}>Cancel</Button>
             </DialogActions>
         </Dialog>
 
@@ -234,16 +256,6 @@ export function FuturePlan() {
                         <Button color="inherit" onClick={() => {
                             setSemCourse(course);
                             setSem(true);
-                            // setCourseModifications({
-                            //     ...courseModifications,
-                            //     add: [...courseModifications.add, {
-                            //         subject: course.subject,
-                            //         courseID: course.courseID,
-                            //         semester: 'Spring',
-                            //         grade: 'A',
-                            //         year: 2022
-                            //     }]
-                            // });
                         }}>Add</Button>
                     </div>))}
                 </div>
@@ -288,15 +300,8 @@ export function FuturePlan() {
                             <Link className="mr-auto" to={`/course_description?subject=${course.subject}&courseID=${course.courseID}`}>{course.subject} {course.courseID}</Link>
                             <div><br />{course.section} hello &emsp;</div>
                             <Button variant="contained" color="secondary" onClick={() => {
-                                <Dialog open>
-                                    <DialogTitle>Modify</DialogTitle>
-                                    <DialogActions>
-                                        <Button onClick={() => setWantedSection(true)}>Modify Section</Button>
-                                        <Button onClick={() => {
-                                            setSem(true);
-                                        }}>Modify Semester</Button>
-                                    </DialogActions>
-                                </Dialog>
+                                //setSemCourse(course);
+                                setModifyS(true);
                             }}>Modify</Button>
                             <Button variant="contained" color="secondary" onClick={() => {
                                 setDegreePlan({

@@ -140,10 +140,10 @@ export function Course_Description() {
             {section.map(section => <div>{section.map(
                 section => <div>{section.map(
                     section => <div>{section.meetings.map(
-                        meetings => <div>{meetings.days} {meetings.startTime}-{meetings.endTime} {meetings.instructors.map(
+                        meetings => <div>{meetings.days} {meetings.startTime}-{meetings.endTime} {meetings.instructors.length ? meetings.instructors.map(
                             instructors => <div><Link to={`/professor?id=${instructors._id}`}>
                                 {instructors.firstname} {instructors.lastname}
-                            </Link></div>)}</div>)}</div>)}</div>)}</div>)}
+                            </Link></div>) : "To Be Assigned (TBA)"}</div>)}</div>)}</div>)}</div>)}
         </div>
     </div></Layout>)
 }
