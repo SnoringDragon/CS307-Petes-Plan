@@ -84,7 +84,7 @@ export function ClassHistory() {
 
     return (<Layout>
         <Dialog open={createSem} onClose={() => setSem(false)}>
-            <DialogTitle>Select Planned Semester</DialogTitle>    
+            <DialogTitle>Select Past Semester</DialogTitle>    
             <DialogContent>
                 <Select fullWidth value={selectedSem} onChange={e => setSelectedSem(e.target.value as string)}>
                        <MenuItem value="Fall">Fall</MenuItem>

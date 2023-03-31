@@ -5,6 +5,7 @@ import { ApiProfessor } from '../../types/professor';
 import { FaArrowLeft } from 'react-icons/fa';
 import ProfessorService from '../../services/ProfessorService';
 import { Link } from 'react-router-dom';
+import { Ratings } from '../../components/ratings/ratings';
 
 export function Professor_Page() {
     const [searchParams] = useSearchParams();
@@ -45,14 +46,27 @@ export function Professor_Page() {
             <div className="float-left ml-2 text-2xl cursor-pointer" onClick={() => navigate(-1)}>
                 <FaArrowLeft />
             </div>
-            {professor.firstname} {professor.lastname}
         </header>
-        <div className="p-4">
-            <div><span className="underline">Email:</span> {professor.email}</div>
-            {professor.rateMyProfIds.map(
-                rateMyProfIds => <div><Link to={`https://www.ratemyprofessors.com/professor/${rateMyProfIds}`}>
-                    Rate my Professor link
-                </Link></div>)}
+        <div className="flex flex-col">
+            <span className="text-2xl">{professor.firstname}{professor.nickname ? ` (${professor.nickname}) ` : ' '}{professor.lastname}</span>
+
         </div>
+
+        <div className="flex mt-4 mb-8">
+            <div className="flex">
+                <span className="underline font-bold">Email: </span> &nbsp;
+                <a href={`mailto:` + professor.email}>{professor.email}</a>
+            </div>
+            {professor.rateMyProfIds.length ? <div className="flex ml-8">
+                <span className="mr-2">Rate My Professor Links:</span>
+                {professor.rateMyProfIds.map(
+                    (rateMyProfIds, i) => <div key={rateMyProfIds} className="ml-2">
+                        <a href={`https://www.ratemyprofessors.com/professor/${rateMyProfIds}`} target="_blank">
+                        Link {i + 1}
+                    </a></div>)}
+            </div> : null}
+        </div>
+
+        <Ratings instructor={professor._id} filter={searchParams.get('filter')?.split(',') ?? []} />
     </div></Layout>)
 }

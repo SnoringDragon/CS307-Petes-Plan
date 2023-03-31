@@ -1,6 +1,6 @@
 export interface BaseRating {
     _id: string,
-    course: {
+    course?: {
         _id: string,
         courseID: string,
         subject: string,

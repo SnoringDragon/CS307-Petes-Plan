@@ -18,7 +18,8 @@ export interface ApiProfessor {
     lastname: string,
     email: string,
     //classes: Classes
-    rateMyProfIds: string[]
+    rateMyProfIds: string[],
+    nickname?: string
 }
 
 

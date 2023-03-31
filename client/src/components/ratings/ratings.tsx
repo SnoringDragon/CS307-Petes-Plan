@@ -123,7 +123,7 @@ export function Ratings(props: RatingSearch & { filter?: string[] }) {
 
     if (filter.length) {
         data = ratings.data.filter(rating => {
-            return filter.includes(isCourse ? rating.instructor._id : rating.course._id);
+            return filter.includes(isCourse ? rating.instructor._id : rating.course?._id ?? '');
         });
         avgQuality = data.reduce((t, x) => t + x.quality, 0) / data.length;
         avgDifficulty = data.reduce((t, x) => t + x.difficulty, 0) / data.length;
@@ -243,11 +243,11 @@ export function Ratings(props: RatingSearch & { filter?: string[] }) {
                             <FaLaptop className="w-5 h-5 -m-1.5 text-white" />
                         </IconButton>
                     </Tooltip>}
-                    <Link className="text-lg" to={isCourse ? `/` :
-                        `/course_description?subject=${rating.course.subject}&courseID=${rating.course.courseID}`}>{ // TODO: add instructor link
+                    {rating.course ? <Link className="text-lg" to={isCourse ? `/professor?id=${rating.instructor._id}&filter=${course._id}` :
+                        `/course_description?subject=${rating.course.subject}&courseID=${rating.course.courseID}&filter=${instructor._id}`}>{
                         isCourse ? renderProfessor(rating.instructor):
                             `${rating.course.subject} ${rating.course.courseID}`
-                    }</Link>
+                    }</Link> : <span className="italic font-normal">No course found</span>}
                     <span className="ml-auto">{
                         new Date(rating.createdAt).toLocaleDateString(undefined, { dateStyle: 'long' })
                     }</span>

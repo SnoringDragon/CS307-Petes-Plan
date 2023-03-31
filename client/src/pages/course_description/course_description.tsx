@@ -123,7 +123,7 @@ export function Course_Description() {
             <p></p>
             <Prerequisites prerequisites={course.requirements} userCourses={userCourses} />
             <div className="mt-5 underline">Reviews:</div>
-            <Ratings courseID={course.courseID} subject={course.subject} />
+            <Ratings courseID={course.courseID} subject={course.subject} filter={searchParams.get('filter')?.split(',') ?? []} />
             <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">Semester</InputLabel>
                 <Select fullWidth className="my-2" labelId="demo-simple-select-label"

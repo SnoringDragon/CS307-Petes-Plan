@@ -21,7 +21,7 @@ import { Profile_Page } from './pages/profile_page/profile_page';
 import { AP_Class } from './pages/ap_class/ap_class';
 import { Major_Requirements } from './pages/major_requirements/major_requirements';
 import { VerifyEmail } from './pages/verify-email/verify-email';
-import { CourseSearch } from './pages/course-search/course-search';
+import { CourseInstructorSearch } from './pages/course-search/course-instructor-search';
 import { AllReq } from './pages/all_req/all_req';
 import { GradeCalc } from './pages/grade-calc/grade-calc';
 import { Section_Info } from './pages/section-info/section-info';
@@ -73,7 +73,7 @@ const router = createBrowserRouter([
     },
     {
       path: '/course-search',
-      element: <CourseSearch />
+      element: <CourseInstructorSearch />
     },
     {
       path: "/profile_page",
