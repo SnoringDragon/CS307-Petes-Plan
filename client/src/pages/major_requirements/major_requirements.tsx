@@ -65,9 +65,52 @@ export function Major_Requirements() {
                         const isSatisfied = userCourses.find(other => other.courseID === course.courseID &&
                             other.subject === course.subject);
 
+                            let current = false;
+                            if (isSatisfied) {
+                                let yr = new Date().getFullYear();
+                                let mon = new Date().getMonth();
+                                let month;
+    
+                                if (mon > 7 && mon < 13) {
+                                    month = "Fall";
+                                } else if (mon < 5 && mon > 0) {
+                                    month = "Spring";
+                                } else if (mon > 4 && mon < 8) {
+                                    month = "Summer";
+                                } else {
+                                    month = "N/A";
+                                }
+    
+                                if (!(isSatisfied.semester.localeCompare(month)) && yr == isSatisfied.year)  {
+                                    current = true;
+                                }
+                            }
+
+                            let planned = false;
+                            if (!isSatisfied) {
+                               for (let i = 0; i < degreePlan!.courses.length; i++) {
+                                    if (course.courseID === degreePlan!.courses[i].courseID
+                                        && course.subject === degreePlan!.courses[i].subject) {
+                                            planned = true;
+                                            break;
+                                        }
+                               }
+                            }
+
+                            let color = '';
+                            if (current) {
+                                color = 'bg-blue-500';
+                            } else if (planned) {
+                                color = 'bg-yellow-500';
+                            } else if (isSatisfied != null) {
+                                color = 'bg-green-500';
+                            } else {
+                                color = 'bg-red-500';
+                            }
+
                         return (<span key={i}>
                             {i !== 0  && <b> AND </b>}
-                            <Link className={`bg-opacity-25 ${isSatisfied ? 'bg-green-500' : 'bg-red-500'}`} to={`/course_description?subject=${course.subject}&courseID=${course.courseID}`}>
+                            <Link className={`bg-opacity-25 ${color}`} to={`/course_description?subject=${course.subject}&courseID=${course.courseID}`}>
                                 {course.subject} {course.courseID}
                             </Link>
                         </span>)
@@ -95,10 +138,53 @@ export function Major_Requirements() {
                 <u>Shared Requirements: </u> {shared!.map((course, i) => {
                         const isSatisfied = userCourses.find(other => other.courseID === course.courseID &&
                             other.subject === course.subject);
-                        
+
+                            let current = false;
+                            if (isSatisfied) {
+                                let yr = new Date().getFullYear();
+                                let mon = new Date().getMonth();
+                                let month;
+    
+                                if (mon > 7 && mon < 13) {
+                                    month = "Fall";
+                                } else if (mon < 5 && mon > 0) {
+                                    month = "Spring";
+                                } else if (mon > 4 && mon < 8) {
+                                    month = "Summer";
+                                } else {
+                                    month = "N/A";
+                                }
+    
+                                if (!(isSatisfied.semester.localeCompare(month)) && yr == isSatisfied.year)  {
+                                    current = true;
+                                }
+                            }
+
+                            let planned = false;
+                            if (!isSatisfied) {
+                               for (let i = 0; i < degreePlan!.courses.length; i++) {
+                                    if (course.courseID === degreePlan!.courses[i].courseID
+                                        && course.subject === degreePlan!.courses[i].subject) {
+                                            planned = true;
+                                            break;
+                                        }
+                               }
+                            }
+
+                            let color = '';
+                            if (current) {
+                                color = 'bg-blue-500';
+                            } else if (planned) {
+                                color = 'bg-yellow-500';
+                            } else if (isSatisfied != null) {
+                                color = 'bg-green-500';
+                            } else {
+                                color = 'bg-red-500';
+                            }
+                            
                         return (<span key={i}>
                             {i !== 0  && <b> AND </b>}
-                            <Link className={`bg-opacity-25 ${isSatisfied ? 'bg-green-500' : 'bg-red-500'}`} to={`/course_description?subject=${course.subject}&courseID=${course.courseID}`}>
+                            <Link className={`bg-opacity-25 ${color}`} to={`/course_description?subject=${course.subject}&courseID=${course.courseID}`}>
                                 {course.subject} {course.courseID}
                             </Link>
                         </span>)
