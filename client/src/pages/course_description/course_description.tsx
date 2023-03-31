@@ -124,8 +124,9 @@ export function Course_Description() {
             <Prerequisites prerequisites={course.requirements} userCourses={userCourses} />
             <div className="mt-5 underline">Reviews:</div>
             <Ratings courseID={course.courseID} subject={course.subject} filter={searchParams.get('filter')?.split(',') ?? []} />
+            <div><br /></div>
             <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Semester</InputLabel>
+                <InputLabel id="demo-simple-select-label"><font color="white"> Semester </font></InputLabel>
                 <Select fullWidth className="my-2" labelId="demo-simple-select-label"
                     id="demo-simple-select"
                     value={selectedSemester}
@@ -145,5 +146,5 @@ export function Course_Description() {
                                 {instructors.firstname} {instructors.lastname}
                             </Link></div>) : "To Be Assigned (TBA)"}</div>)}</div>)}</div>)}</div>)}
         </div>
-    </div></Layout>)
+    </div></Layout >)
 }
