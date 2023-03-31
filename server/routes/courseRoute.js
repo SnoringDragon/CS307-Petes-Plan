@@ -8,14 +8,28 @@ const mongoose = require('mongoose');
 module.exports = app => {
     const router = Router();
 
-    router.get('/', async (req, res) => {
-        if (typeof req.query.subject !== 'string' || typeof req.query.courseID !== 'string')
-            return res.status(400).json({ message: 'invalid input' });
+    const getCourse = async (req, res, next) => {
+        const filter = {};
 
-        const course = await Course.findOne({
-            subject: req.query.subject,
-            courseID: req.query.courseID
-        }).lean();
+        if (req.query.course) {
+            try {
+                filter._id = mongoose.Types.ObjectId(req.query.course);
+            } catch {
+                return res.status(400).json('invalid course id');
+            }
+        } else if (typeof req.query.subject !== 'string' || typeof req.query.courseID !== 'string') {
+            return res.status(400).json({ message: 'invalid input' });
+        } else {
+            filter.courseID = req.query.courseID;
+            filter.subject = req.query.subject;
+        }
+
+        req.course = await Course.findOne(filter);
+        next();
+    };
+
+    router.get('/', getCourse, async (req, res) => {
+        const course = req.course.toObject();
 
         if (!course) return res.json(course);
 
@@ -34,17 +48,11 @@ module.exports = app => {
         return res.json(course);
     });
 
-    router.get('/sections', async (req, res) => {
-        if (typeof req.query.subject !== 'string' || typeof req.query.courseID !== 'string' ||
-            typeof req.query.semester !== 'string')
+    router.get('/sections', getCourse, async (req, res) => {
+        if (typeof req.query.semester !== 'string')
             return res.status(400).json({ message: 'invalid input' });
 
-        const course = await Course.findOne({
-            subject: req.query.subject,
-            courseID: req.query.courseID
-        });
-
-        if (!course) return res.json([]);
+        if (!req.course) return res.json([]);
 
         try {
             mongoose.Types.ObjectId(req.query.semester);
@@ -52,7 +60,7 @@ module.exports = app => {
             return res.status(400).json({ message: 'invalid input' });
         }
 
-        return res.json(await course.getSections(req.query.semester));
+        return res.json(await req.course.getSections(req.query.semester));
     });
 
     router.get('/search', async (req, res) => {
@@ -93,14 +101,8 @@ module.exports = app => {
     });
 
     /* Return scheduling information for a course */
-    router.get('/scheduling', async (req, res) => {
-        /* Check course is valid */
-        if (typeof req.query.subject !== 'string' || typeof req.query.courseID !== 'string') {
-            return res.status(400).json({ message: 'invalid input' });
-        }
-
-        var course = await Course.findOne({ subject: req.query.subject, courseID: req.query.courseID });
-        if (!course) {
+    router.get('/scheduling', getCourse, async (req, res) => {
+        if (!req.course) {
             return res.status(404).json({
                 message: 'Course not found',
                 subject: req.query.subject,

@@ -2,7 +2,7 @@ import { Api } from './Api';
 import {Section} from "../types/course-requirements";
 
 class CourseService extends Api {
-    getCourse(options: { courseID: string, subject: string }) {
+    getCourse(options: { courseID: string, subject: string } | { course: string }) {
         return this.get(`/api/courses/?${new URLSearchParams(options)}`);
     }
 
@@ -22,7 +22,7 @@ class CourseService extends Api {
      *  ]
      *  A valid choice could be lecture 1 + recitation 1. another valid choice could be lecture 3 + recitation 4
      */
-    getCourseSections(options: { courseID: string, subject: string, semester: string }) {
+    getCourseSections(options: { courseID: string, subject: string, semester: string } | { course: string, semester: string }) {
         return this.get<Section[][][]>(`/api/courses/sections/?${new URLSearchParams(options)}`);
     }
 

@@ -18,6 +18,14 @@ class DegreePlanService extends Api {
     removeFromDegreePlan(plan: string, degrees: string[], courses: string[]) {
         return this.delete<{ degreePlan: DegreePlan }>(`/api/degreePlan/${plan}/remove`, { degrees, courses });
     }
+
+    getOverlap(plan: string, degree: string ) {
+        return this.get<{reqs: {courseID: string, subject: string}[]}>(`/api/degreePlan/${plan}/gradReqsIntersect/${degree}`);
+    }
+
+    getTotalReqs(plan: string) {
+        return this.get<{reqs: {courseID: string, subject: string}[]}>(`/api/degreePlan/${plan}/gradReqs`);
+    }
 }
 
 export default new DegreePlanService();

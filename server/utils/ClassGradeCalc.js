@@ -8,60 +8,38 @@
 //label examples: homework, exam, essay, quiz, project, extra cred, discussion, activity, mischellaneous
 //see below to testing code for more examples
 
-function calculateGrade(weights, assignments) {
+function calculateGrade(req, res) {
     let grade = 0.0;
+    categories = req.categories;
     //weights is a map of type (str, int) = (label, weight). Ex: ("homework", "20") 
-    let extraCred = 0;    
     
-    let grades = new Map(); 
-    for (let i = 0; i < (assignments.length); i++) {
-        if (grades.has(assignments[i][0])) {
-            let current = grades.get(assignments[i][0]);
-            current.push(assignments[i][2]);
-            grades.set(assignments[i][0], current);
-        } else {
-            grades.set(assignments[i][0], [assignments[i][2]]);
+    for (let i = 0; i < categories.length; i++) {
+        // let categoryGrade = 0;
+        let numGrades = 0;
+        let earnedPoints = 0;
+        let maxPoints = 0;
+        let ec = 0;
+        for (let j = 0; j < categories[i].assignments.length; j++) {
+            numGrades+=1;
+            earnedPoints += (categories[i].assignments[j].earned_points);
+            maxPoints += (categories[i].assignments[j].max_points);
+            ec += categories[i].assignments[j].extra_credit;
         }
-    }
-    for (let [key, value] of grades) {
-        //if label is not extra credit
-        if (key.localeCompare("extra credit")) {
-            category_pts = value.reduce((a, b) => a + b, 0) / value.length;
-            let uncappedGrade = category_pts * weights.get(key)[0] * 0.01;
-            if (weights.get(key)[1]) {
-                if (grade > weights.get(key)[0]) {
-                    grade += weights.get(key)[0];
-                } else {
-                    grade += uncappedGrade;
-                }
-            } else {
-                grade += uncappedGrade;
-            }
+        //if extra credit category, add earnedPoints raw
+        if (!categories[i].label.localeCompare("extra credit")) {
+            ec += earnedPoints;
         } else {
-            uncappedGrade = value.reduce((a, b) => a + b, 0);
-            if (weights.get(key)[1]) {
-                if (weights.get(key)[1] < category_pts) {
-                    grade += weights.get(key)[1];
-                } 
-            } else {
-                grade += uncappedGrade;
-            }
+            grade += earnedPoints/maxPoints * categories[i].weight * 100;
         }
-        // } else {
-        //     //if it is extra credit and capped is true, then set grade to 100 (maxgGade)
-        //     sum = value.reduce((a, b) => a + b, 0)
-        //     if (capped) {
-        //         if (grade > 100) {
-        //             grade = 100;
-        //         }
-        //     }
-        // }
+        
+        //if no extra credit cap, then don't apply it
+        if (categories[i].max_ec < ec) {
+            ec = categories[i].max_ec;
+        }
+        
+        grade += ec;
         
     }
-    if (grade > 100) {
-        grade = 100;
-    } 
-    return [grade, getLetterGrade(grade)];
 }
 
 function getLetterGrade(numberGrade) {
@@ -96,6 +74,68 @@ function getLetterGrade(numberGrade) {
 
 module.exports = calculateGrade;
 
+const jsonExample = {
+    "categories": [
+        {
+            "label": "homework",
+            "weight": 0.2,
+            "max_ec": 4,
+            "assignments": [
+                {
+                    "label": "Assignment 1",
+                    "earned_points": 10,
+                    "max_points": 12,
+                    "extra_credit": 1
+                },
+                {
+                    "label": "Assignment 2",
+                    "earned_points": 4,
+                    "max_points": 7,
+                    "extra_credit": 2
+                }
+            ]
+        },
+        {
+            "label": "quizzes",
+            "weight": 0.3,
+            "max_ec": 2,
+            "assignments": [
+                {
+                    "label": "Quiz 1",
+                    "earned_points": 36,
+                    "max_points": 58,
+                    "extra_credit": 4
+                },
+                {
+                    "label": "Quiz 2",
+                    "earned_points": 38,
+                    "max_points": 39,
+                    "extra_credit": 1
+                }
+            ]
+        },
+        {
+            "label": "exams",
+            "weight": 0.5,
+            "max_ec": 0,
+            "assignments": [
+                {
+                    "label": "Exam 1",
+                    "earned_points": 48,
+                    "max_points": 100,
+                    "extra_credit": 1
+                },
+                {
+                    "label": "Exam 2",
+                    "earned_points": 85,
+                    "max_points": 98,
+                    "extra_credit": 0
+                }
+            ]
+        }
+    ]
+};
+
 // let weights = new Map();
 // let labels = ["homework", "quiz", "exam", "extra credit"];
 // //extra cred has default weight of 100
@@ -104,4 +144,4 @@ module.exports = calculateGrade;
 //     weights.set(labels[i], label_weights[i]);
 // }
 // assignments = [["homework", "Assignment 1", 90], ["homework", "Assignment 2", 80], ["homework", "Assignment 2", 70], ["quiz", "Quiz 1", 90], ["quiz", "Quiz 2", 100], ["exam", "Exam 1", 105], ["exam", "Exam 1", 100], ["extra credit", "ec 1", 6],];
-// console.log(calculateGrade(weights, assignments));
+console.log(calculateGrade(jsonExample));
