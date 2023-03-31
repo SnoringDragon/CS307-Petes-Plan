@@ -300,6 +300,7 @@ export function FuturePlan() {
                                 //setSemCourse(course);
                                 setModifyS(true);
                             }}>Modify</Button>
+                            <div>&emsp;</div>
                             <Button variant="contained" color="secondary" onClick={() => {
                                 setDegreePlan({
                                     ...degreePlan,
