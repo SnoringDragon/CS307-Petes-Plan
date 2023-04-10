@@ -19,7 +19,7 @@ export function Boilergrades(props: { className?: string,
             </Button>}
             {props.data.data.size === 0 && <span>No boilergrades found</span>}
         </div>
-        <div className={`flex flex-col max-h-64 overflow-auto ${isHidden ? 'hidden' : ''}`}>
+        <div className={`flex flex-col max-w-5xl overflow-auto ${isHidden ? 'hidden' : ''}`}>
             {props.data.data.size > 0 && <div className="flex items-center border border-gray-500 border-b-4">
                 <div className="w-72 pl-2 flex flex-col" >
                     <span>Overall GPA: {props.data.overall.gpa.toFixed(2)}</span>
